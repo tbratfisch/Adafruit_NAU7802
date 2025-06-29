@@ -150,19 +150,29 @@ bool Adafruit_NAU7802::available(void) {
 /**************************************************************************/
 /*!
     @brief  Set which channel for ADC
-    @param channel Set to 0 for CH1, 1 for CH2
+    @param channel Set to 0 for CH1, 1 for CH2, 2 for the internal temperature sensor
     @returns False if any I2C error occured
 */
 /**************************************************************************/
 bool Adafruit_NAU7802::setChannel(uint8_t channel) {
-  if (channel > 1)
-    channel = 1;
+  if (channel > 2)
+    channel = 2;
 
-  Adafruit_I2CRegister ctrl2_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_CTRL2);
-  Adafruit_I2CRegisterBits ch_select =
+  bool ret = true;
+  Adafruit_I2CRegister i2c_control_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_I2C_CONTROL);
+  Adafruit_I2CRegisterBits ch_ts =
+    Adafruit_I2CRegisterBits(&i2c_control_reg, 1, 1); // # bits, bit_shift
+  if (channel == 2) {
+    ret &= ch_ts.write(1);
+  } else {
+    ret &= ch_ts.write(0);
+    Adafruit_I2CRegister ctrl2_reg = Adafruit_I2CRegister(i2c_dev, NAU7802_CTRL2);
+    Adafruit_I2CRegisterBits ch_select =
       Adafruit_I2CRegisterBits(&ctrl2_reg, 1, 7); // # bits, bit_shift
+      ret &= ch_select.write(channel);
+  }
 
-  return ch_select.write(channel);
+  return ret;
 }
 
 /**************************************************************************/

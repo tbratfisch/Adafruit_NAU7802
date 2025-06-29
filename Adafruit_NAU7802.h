@@ -24,6 +24,7 @@
 #define NAU7802_PU_CTRL 0x00         ///< Power control register
 #define NAU7802_CTRL1 0x01           ///< Control/config register #1
 #define NAU7802_CTRL2 0x02           ///< Control/config register #2
+#define NAU7802_I2C_CONTROL 0x11     ///< I2C control
 #define NAU7802_ADCO_B2 0x12         ///< ADC ouput LSB
 #define NAU7802_ADC 0x15             ///< ADC / chopper control
 #define NAU7802_PGA 0x1B             ///< PGA control
